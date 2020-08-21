@@ -4,3 +4,4 @@ __pycache__
 venv
 scripts/datastore/
 eks/migrations/
+app/secret_settings.py
