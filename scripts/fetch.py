@@ -192,7 +192,7 @@ def run():
 
         # paths and filenames
         basedir = os.path.abspath(os.path.dirname(__file__))
-        datastore = os.path.join(basedir, 'datastore')
+        datastore = os.path.join(basedir, '..', 'datastore')
         datastore_today = os.path.join(datastore, timestamp_date)
 
         #DKS_CSV_FILE = os.path.join(datastore, "diagnosis_keys_statistics.csv")
