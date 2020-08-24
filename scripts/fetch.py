@@ -166,30 +166,16 @@ def process_trl_data(filename):
 def run():
     if manifest_environment:
 
-        # date pattern
-        #pattern_date = re.compile(r"([0-9]{4})-([0-9]{2})-([0-9]{2})")
-
         # timestamps and dates
-        _now = datetime.now()
-        now = _now.replace(microsecond=0)
-        _timestamp = datetime.timestamp(now)
-        timestamp = int(_timestamp)
-        #pd = pattern_date.findall(date_str)
-        #timestamp = int(datetime(year=int(pd[0][0]), month=int(pd[0][1]), day=int(pd[0][2]), hour=2).strftime("%s"))
-
-        #dt_object = datetime.fromtimestamp(timestamp)
-        #today = datetime.date.today()
         timestamp_date = '{:%Y-%m-%d}'.format(datetime.now())
-        #timestamp_hour = '{:%H}'.format(datetime.now())
-        #timestamp_full = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.now())
 
         # paths and filenames
         basedir = os.path.abspath(os.path.dirname(__file__))
         datastore = os.path.join(basedir, '..', 'datastore')
         datastore_today = os.path.join(datastore, timestamp_date)
 
-        dks_json_file = os.path.join(datastore, "diagnosis_keys_statistics.json")
-        trl_json_file = os.path.join(datastore, "transmission_risk_level_statistics.json")
+        dks_json_file = os.path.join(datastore_today, "diagnosis_keys_statistics.json")
+        trl_json_file = os.path.join(datastore_today, "transmission_risk_level_statistics.json")
 
         headers = {
             'Content-Type': 'application/json',
@@ -245,8 +231,8 @@ def run():
 
         seen = 0
         counter = 0
-        trl_sum_data = {'timestamp': timestamp, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0}
-        dks_sum_data = {'timestamp': timestamp, 'num_keys': 0, 'num_users': 0, 'num_invalid_users': 0, 'num_keys_not_parsed': 0, 'num_keys_not_parsed_without_padding': 0, 'num_submitted_keys': 0}
+        trl_sum_data = {'timestamp_date': timestamp_date, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0}
+        dks_sum_data = {'timestamp_date': timestamp_date, 'num_keys': 0, 'num_users': 0, 'num_invalid_users': 0, 'num_keys_not_parsed': 0, 'num_keys_not_parsed_without_padding': 0, 'num_submitted_keys': 0}
         for exposurekeyset in exposurekeysets:
             eks = shorten_exposurekeyset(exposurekeyset)
 
@@ -355,4 +341,3 @@ def run():
             # stats to db
             #print("sum TRLs: {}".format(trl_sum_data))
             #print("sum SKDs: {}".format(dks_sum_data))
-
