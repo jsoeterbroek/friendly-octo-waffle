@@ -107,9 +107,7 @@ def process_data_from_dat(filename):
     return _data_list
 
 def check_key_exists(_key):
-    # check if object exists
     if Eks.objects.filter(key=_key).exists():
-        #print('INFO: key exists..')
         return True
     else:
         return False
@@ -182,25 +180,16 @@ def run():
         #dt_object = datetime.fromtimestamp(timestamp)
         #today = datetime.date.today()
         timestamp_date = '{:%Y-%m-%d}'.format(datetime.now())
-        timestamp_hour = '{:%H}'.format(datetime.now())
-        timestamp_full = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.now())
-
-        print("timestamp: {}".format(timestamp))
-        print("timestamp_date: {}".format(timestamp_date))
-        print("timestamp_hour: {}".format(timestamp_hour))
-        print("timestamp_full: {}".format(timestamp_full))
+        #timestamp_hour = '{:%H}'.format(datetime.now())
+        #timestamp_full = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.now())
 
         # paths and filenames
         basedir = os.path.abspath(os.path.dirname(__file__))
         datastore = os.path.join(basedir, '..', 'datastore')
         datastore_today = os.path.join(datastore, timestamp_date)
 
-        #DKS_CSV_FILE = os.path.join(datastore, "diagnosis_keys_statistics.csv")
-        #DKS_JSON_FILE = os.path.join(datastore, "diagnosis_keys_statistics.json")
-        #TRL_CSV_FILE = os.path.join(datastore, "transmission_risk_level_statistics.csv")
-        #TRL_JSON_FILE = os.path.join(datastore, "transmission_risk_level_statistics.json")
-
-        data_list = []
+        dks_json_file = os.path.join(datastore, "diagnosis_keys_statistics.json")
+        trl_json_file = os.path.join(datastore, "transmission_risk_level_statistics.json")
 
         headers = {
             'Content-Type': 'application/json',
@@ -243,12 +232,10 @@ def run():
         exposurekeysets = json_obj['exposureKeySets']
         no_keysets = len(exposurekeysets)
         json_obj['no_keysets'] = no_keysets
-        #retrieval_timestamp = get_local_timestamp()
         json_obj['retrievaltimestamp'] = "TODO"
         json_obj['manifest_pki_signature'] = "TODO"
 
-        #environment_json = json_obj
-        #print(json.dumps(environment_json, indent=2))
+        #print(json.dumps(json_obj, indent=4))
 
         datastore_filename = "manifest.json"
         datastore_file = os.path.join(datastore_today, datastore_filename)
@@ -258,25 +245,18 @@ def run():
 
         seen = 0
         counter = 0
-        sum_keys = 0
-        sum_users = sum_submitted_keys = 0
-        sum_invalid_users = 0
-        sum_keys_not_parsed = 0
-        sum_keys_not_parsed_without_padding = 0
-        sum_submitted_keys = 0
-        trl_sum_data = {}
+        trl_sum_data = {'timestamp': timestamp, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0}
+        dks_sum_data = {'timestamp': timestamp, 'num_keys': 0, 'num_users': 0, 'num_invalid_users': 0, 'num_keys_not_parsed': 0, 'num_keys_not_parsed_without_padding': 0, 'num_submitted_keys': 0}
         for exposurekeyset in exposurekeysets:
             eks = shorten_exposurekeyset(exposurekeyset)
 
             counter += 1
-            if check_key_exists(eks):
-                print("exposure keyset {} allready seen...".format(eks))
+            if check_key_exists(exposurekeyset):
+                print("exposure keyset {} allready seen, skipping...".format(eks))
                 seen += 1
                 continue
             else:
                 print("INFO: {}/{} retrieving exposure keyset '{}'.. ".format(counter, no_keysets, eks), end='')
-                #curl ${=CFLAGS} --output eks.zip "$URL/v1/exposurekeyset/$exposureKeySets$SIG"
-
                 keyseturl = '%s/v1/exposurekeyset/%s' % (url, exposurekeyset)
                 try:
                     r = requests.get(keyseturl, headers=headers)
@@ -295,79 +275,84 @@ def run():
                 eksdat = eks + ".dat"
                 fn_eksdat = os.path.join(datastore_today, eksdat)
                 if not os.path.isfile(fn_eksdat):
-                    #os.system("scripts/diagnosis-keys/parse_keys_json.py -l -d {} > {}".format(zname, fn_analysis))
                     os.system("scripts/diagnosis-keys/parse_keys.py --auto-multiplier -m 5 -n -u -l -d {} > {}".format(zname, fn_eksdat))
                 anonymize_TEKs(fn_eksdat)
 
-                data_list = process_data_from_dat(fn_eksdat)
+                dks_data_list = process_data_from_dat(fn_eksdat)
+                dks_data_dict = {}
+                trl_data_dict = process_trl_from_dat(exposurekeyset, fn_eksdat)
 
-                num_keys = data_list[0]
-                num_users = data_list[1]
-                num_invalid_users = data_list[2]
-                num_keys_not_parsed = data_list[3]
-                num_keys_not_parsed_without_padding = data_list[4]
-                num_submitted_keys = data_list[5]
-                data = {}
-                data['environment'] = manifest_environment
-                print("INFO: writing to django ({}).. ".format(data['environment']), end='')
-                #    #print(json.dumps(json_obj, indent=4))
-                data['key'] = exposurekeyset
-                data['shortkey'] = eks
-                #    data['timewindow_start_timestamp'] = json_obj['timeWindowStart']
-                #    data['timewindow_end_timestamp'] = json_obj['timeWindowEnd']
-                #    data['region'] = json_obj['region']
-                #    data['batch_num'] = json_obj['batchNum']
-                #    data['batch_size'] = json_obj['batchCount']
-                #    #data['app_bundle_id'] =
-                #    data['verification_key_version'] = json_obj['signatureInfos']['verification_key_version']
-                #    data['verification_key_id'] = json_obj['signatureInfos']['verification_key_id']
-                #    data['signature_algorithm'] = json_obj['signatureInfos']['signature_algorithm']
-                #    #data['padding_multiplier'] = 5
-                data['num_teks'] = num_keys
+                num_keys = dks_data_list[0]
+                num_users = dks_data_list[1]
+                num_invalid_users = dks_data_list[2]
+                num_keys_not_parsed = dks_data_list[3]
+                num_keys_not_parsed_without_padding = dks_data_list[4]
+                num_submitted_keys = dks_data_list[5]
+                dks_data_dict['environment'] = manifest_environment
+
+                print("INFO: writing to django ({}).. ".format(dks_data_dict['environment']), end='')
+                dks_data_dict['key'] = exposurekeyset
+                dks_data_dict['shortkey'] = eks
+                dks_data_dict['num_teks'] = num_keys
+
                 print("INFO: {}/{} saving exposure keyset {} to db'.. ".format(counter, no_keysets, eks), end='')
-                if create_obj(Eks, data):
+                if create_obj(Eks, dks_data_dict):
                     print("OK")
                 else:
                     print("ERR")
 
-                # increment
-                sum_keys += num_keys
-                sum_users += num_users
-                sum_invalid_users += num_invalid_users
-                sum_keys_not_parsed += num_keys_not_parsed
-                sum_keys_not_parsed_without_padding += num_keys_not_parsed_without_padding
-                sum_submitted_keys += num_submitted_keys
+                dks_data_dict['num_keys'] = num_keys
+                dks_data_dict['num_users'] = num_users
+                dks_data_dict['num_invalid_users'] = num_invalid_users
+                dks_data_dict['num_keys_not_parsed'] = num_keys_not_parsed
+                dks_data_dict['num_keys_not_parsed_without_padding'] = num_keys_not_parsed_without_padding
+                dks_data_dict['num_submitted_keys'] = num_submitted_keys
 
-                # tabubulate TRL's
-                trl_sum_data = {'key': exposurekeyset, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0}
-                trl_data = process_trl_from_dat(exposurekeyset, fn_eksdat)
-                for i, v in trl_data.items():
-                    if i != 'key':
-                        trl_sum_data[i] = trl_sum_data[i] + v
+                # increment DKS (diagnosis_keys)
+                for i, v in dks_data_dict.items():
+                    _filter = ['environment', 'key', 'shortkey', 'num_teks']
+                    if i not in _filter:
+                        dks_sum_data[i] += dks_sum_data[i] + v
+
+                # increment TRL
+                for i, v in trl_data_dict.items():
+                    _filter = ['key']
+                    if i not in _filter:
+                        trl_sum_data[i] += trl_sum_data[i] + v
 
                 # clean up
-                manifestzip = os.path.join(datastore_today, 'manifest.zip')
-                if os.path.isfile(manifestzip):
-                    os.remove(manifestzip)
                 ekszip = os.path.join(datastore_today, ekszip)
                 if os.path.isfile(ekszip):
                     os.remove(ekszip)
-                contentbin = os.path.join(datastore_today, 'content.bin')
-                if os.path.isfile(contentbin):
-                    os.remove(contentbin)
-                contentsig = os.path.join(datastore_today, 'content.sig')
-                if os.path.isfile(contentsig):
-                    os.remove(contentsig)
 
-        if seen == counter:
+        # clean up
+        manifestzip = os.path.join(datastore_today, 'manifest.zip')
+        if os.path.isfile(manifestzip):
+            os.remove(manifestzip)
+        contentbin = os.path.join(datastore_today, 'content.bin')
+        if os.path.isfile(contentbin):
+            os.remove(contentbin)
+        contentsig = os.path.join(datastore_today, 'content.sig')
+        if os.path.isfile(contentsig):
+            os.remove(contentsig)
+
+
+        # write to datastore
+        if seen != counter:
+            print("INFO: saving stats DKS to datastore'.. ", end='')
+            # write json to disk
+            with open(dks_json_file, 'w') as f:
+                f.write(json.dumps(dks_sum_data, sort_keys=True, indent=4))
+                f.close()
+            print("OK")
+            print("INFO: saving stats TRL to datastore'.. ", end='')
+            # write json to disk
+            with open(trl_json_file, 'w') as f:
+                f.write(json.dumps(trl_sum_data, sort_keys=True, indent=4))
+                f.close()
+            print("OK")
+
             # stats to db
-            print("INFO: stats to db'.. ")
-            print("date: {}".format(timestamp_date))
-            print("sum keys: {}".format(sum_keys))
-            print("users: {}".format(sum_users))
-            print("invalid users: {}".format(sum_invalid_users))
-            print("keys not parsed: {}".format(sum_keys_not_parsed))
-            print("keys not parsed without padding: {}".format(sum_keys_not_parsed_without_padding))
-            print("submitted keys: {}".format(sum_submitted_keys))
-            print("sum TRLs: {}".format(trl_sum_data))
+            #print("sum TRLs: {}".format(trl_sum_data))
+            #print("sum SKDs: {}".format(dks_sum_data))
 
