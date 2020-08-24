@@ -8,7 +8,7 @@
 #from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 #from django.shortcuts import render, redirect
 #from django.utils import timezone
-from .models import Eks, Tek
+from .models import Eks
 
 def index(request):
     """ index """

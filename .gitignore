@@ -2,6 +2,8 @@
 *.sqlite3
 __pycache__
 venv
-scripts/datastore/
+*.swp
+#scripts/datastore/
 eks/migrations/
+test*.py
 app/secret_settings.py
