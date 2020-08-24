@@ -15,9 +15,15 @@ apt-get install -y python3-pip
 apt-get install -y git
 apt-get install -y libpq-dev
 
-git clone https://github.com/jsoeterbroek/friendly-octo-waffle.git
-cd friendly-octo-waffle/
+if test -d friendly-octo-waffle; then
+    cd friendly-octo-waffle/
+    git pull
+    cd -
+else
+    git clone https://github.com/jsoeterbroek/friendly-octo-waffle.git
+fi
 
+cd friendly-octo-waffle/
 
 cat > app/secret_settings.py << EOF
 import os
@@ -37,6 +43,8 @@ EOF
 pip3 install -r requirements-diagnosis-keys.txt
 pip3 install -r requirements.txt
 
+python3 manage.py makemigrations
+python3 manage.py migrate
 python3 manage.py runscript fetch
 
 exit 0
