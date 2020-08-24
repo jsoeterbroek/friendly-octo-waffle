@@ -7,3 +7,4 @@ venv
 eks/migrations/
 test*.py
 app/secret_settings.py
+.vagrant
