@@ -125,18 +125,16 @@ def process_data_from_dat(filename):
 
 def add_key_seen(_key, datastore):
 
-    eks = shorten_exposurekeyset(_key)
     keyseenfn = 'keys_seen'
     keyseen = os.path.join(datastore, keyseenfn)
 
     if os.path.isfile(keyseen):
         with open(keyseen, 'a+') as f:
-            f.write(eks)
+            f.write(_key)
         f.close()
 
 def check_key_exists(_key, datastore):
 
-    eks = shorten_exposurekeyset(_key)
     keyseenfn = 'keys_seen'
     keyseen = os.path.join(datastore, keyseenfn)
     ret = False
@@ -147,7 +145,7 @@ def check_key_exists(_key, datastore):
             raw_data = f.read().splitlines()
         f.close()
         for line in raw_data:
-            if eks in line:
+            if _key in line:
                 ret = True
 
     return ret
