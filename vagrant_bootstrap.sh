@@ -1,35 +1,22 @@
 echo "vagrant bootstrap"
 
-# Adding multiverse sources.
-cat > /etc/apt/sources.list.d/multiverse.list << EOF
-deb http://archive.ubuntu.com/ubuntu trusty multiverse
-deb http://archive.ubuntu.com/ubuntu trusty-updates multiverse
-deb http://security.ubuntu.com/ubuntu trusty-security multiverse
-EOF
-
-
-
 # Updating packages
-apt-get update
-apt-get install -y python3-pip
-apt-get install -y git
-apt-get install -y libpq-dev
+sudo apt-get update
+sudo apt-get install -y python3-pip
+sudo apt-get install -y git
+sudo apt-get install -y libpq-dev
 
-if test -d friendly-octo-waffle; then
-    cd friendly-octo-waffle/
-    git pull
-    cd -
-else
+if test ! -d friendly-octo-waffle; then
     git clone https://github.com/jsoeterbroek/friendly-octo-waffle.git
 fi
 
 cd friendly-octo-waffle/
+git pull
+git submodule update --init
 
 cat > app/secret_settings.py << EOF
 import os
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_SECRET_KEY = 'changeme'
 SECRET_DATABASES = {
     'default': {
