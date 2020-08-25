@@ -14,6 +14,7 @@ class Eks(models.Model):
     shortkey = models.CharField("short key", max_length=8)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     environment = models.CharField("omgeving", max_length=125)
+    seen = models.CharField("gezien", max_length=48)
     #timewindow_start_timestamp = models.DateTimeField()
     #timewindow_end_timestamp = models.DateTimeField()
     #timewindow_start_timestamp = models.CharField("timewindow start", max_length=125)

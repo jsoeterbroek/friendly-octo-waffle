@@ -280,6 +280,7 @@ def run():
                 dks_data_dict['key'] = exposurekeyset
                 dks_data_dict['shortkey'] = eks
                 dks_data_dict['num_teks'] = num_keys
+                dks_data_dict['seen'] = timestamp_date
 
                 print("INFO: {}/{} saving exposure keyset {} to db'.. ".format(counter, no_keysets, eks), end='')
                 if create_obj(Eks, dks_data_dict):
@@ -296,7 +297,7 @@ def run():
 
                 # increment DKS (diagnosis_keys)
                 for i, v in dks_data_dict.items():
-                    _filter = ['environment', 'key', 'shortkey', 'num_teks']
+                    _filter = ['environment', 'key', 'shortkey', 'num_teks', 'seen']
                     if i not in _filter:
                         dks_sum_data[i] += dks_sum_data[i] + v
 
@@ -321,7 +322,6 @@ def run():
         contentsig = os.path.join(datastore_today, 'content.sig')
         if os.path.isfile(contentsig):
             os.remove(contentsig)
-
 
         # write to datastore
         if seen != counter:
