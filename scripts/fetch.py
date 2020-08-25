@@ -123,11 +123,39 @@ def process_data_from_dat(filename):
 
     return _data_list
 
-def check_key_exists(_key):
-    if Eks.objects.filter(key=_key).exists():
-        return True
-    else:
-        return False
+def add_key_seen(_key, datastore):
+
+    eks = shorten_exposurekeyset(_key)
+    keyseenfn = 'keys_seen'
+    keyseen = os.path.join(datastore, keyseenfn)
+
+    if os.path.isfile(keyseen):
+        with open(keyseen, 'a+') as f:
+            f.write(eks)
+        f.close()
+
+def check_key_exists(_key, datastore):
+
+    eks = shorten_exposurekeyset(_key)
+    keyseenfn = 'keys_seen'
+    keyseen = os.path.join(datastore, keyseenfn)
+    ret = False
+
+    if os.path.isfile(keyseen):
+
+        with open(keyseen, 'r') as f:
+            raw_data = f.read().splitlines()
+        f.close()
+        for line in raw_data:
+            if eks in line:
+                ret = True
+
+    return ret
+
+    #if Eks.objects.filter(key=_key).exists():
+    #    return True
+    #else:
+    #    return False
 
 def create_obj(klass, dictionary):
     obj = klass()
@@ -254,7 +282,7 @@ def run():
             eks = shorten_exposurekeyset(exposurekeyset)
 
             counter += 1
-            if check_key_exists(exposurekeyset):
+            if check_key_exists(exposurekeyset, datastore):
                 print("exposure keyset {} allready seen, skipping...".format(eks))
                 seen += 1
                 continue
@@ -330,6 +358,9 @@ def run():
                 ekszip = os.path.join(datastore_today, ekszip)
                 if os.path.isfile(ekszip):
                     os.remove(ekszip)
+
+                # add key to keyseen
+                add_key_seen(exposurekeyset, datastore)
 
         # clean up
         manifestzip = os.path.join(datastore_today, 'manifest.zip')
