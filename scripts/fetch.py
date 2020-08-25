@@ -49,6 +49,7 @@ def process_data_from_dat(filename):
         f.close()
 
     # patterns
+    pattern_timewindow = re.compile(r"- Time window: ([0-9]*-[0-9]*-[0-9]* [0-9]*:[0-9]*:[0-9]* [A-Z]*) - ([0-9]*-[0-9]*-[0-9]* [0-9]*:[0-9]*:[0-9]* [A-Z]*)")
     pattern_num_keys = re.compile(r"Length: ([0-9]{1,}) keys")
     pattern_num_users = re.compile(r"([0-9]{1,}) user\(s\) found\.")
     pattern_num_subm = re.compile(r"([0-9]{1,}) user\(s\): ([0-9]{1,}) Diagnosis Key\(s\)")
@@ -61,6 +62,8 @@ def process_data_from_dat(filename):
     num_keys_not_parsed = 0
     num_keys_not_parsed_without_padding = 0
     num_submitted_keys = 0
+    start_timewindow = ''
+    end_timewindow = ''
 
     # read contents
     with open(filename, 'r') as df:
@@ -85,6 +88,14 @@ def process_data_from_dat(filename):
                 if (len(line) == 2):
                     num_keys_not_parsed += int(line[0])
                     num_keys_not_parsed_without_padding += int(line[1])
+        # timewindow
+        pt = pattern_timewindow.findall(raw_data)
+        print(pt)
+        if (len(pt) > 0):
+            for line in pt:
+                if (len(line) == 2):
+                    start_timewindow = str(line[0])
+                    end_timewindow = str(line[1])
         # number of submitted keys
         psk = pattern_num_subm.findall(raw_data)
         if (len(psk) > 0):
@@ -97,6 +108,9 @@ def process_data_from_dat(filename):
     #print("num invalid users: {}".format(num_invalid_users))
     #print("num keys not parsed: {} ({} without padding)".format(num_keys_not_parsed, num_keys_not_parsed_without_padding))
     #print("num submitted keys: {}".format(num_submitted_keys))
+    #print("timewindow start: {}".format(start_timewindow))
+    #print("timewindow end: {}".format(end_timewindow))
+
 
     _data_list.append(num_keys)
     _data_list.append(num_users)
@@ -104,6 +118,9 @@ def process_data_from_dat(filename):
     _data_list.append(num_keys_not_parsed)
     _data_list.append(num_keys_not_parsed_without_padding)
     _data_list.append(num_submitted_keys)
+    _data_list.append(start_timewindow)
+    _data_list.append(end_timewindow)
+
     return _data_list
 
 def check_key_exists(_key):
@@ -281,6 +298,8 @@ def run():
                 dks_data_dict['shortkey'] = eks
                 dks_data_dict['num_teks'] = num_keys
                 dks_data_dict['seen'] = timestamp_date
+                dks_data_dict['start_timestamp'] = dks_data_list[6]
+                dks_data_dict['end_timestamp'] = dks_data_list[7]
 
                 print("INFO: {}/{} saving exposure keyset {} to db'.. ".format(counter, no_keysets, eks), end='')
                 if create_obj(Eks, dks_data_dict):
@@ -297,7 +316,7 @@ def run():
 
                 # increment DKS (diagnosis_keys)
                 for i, v in dks_data_dict.items():
-                    _filter = ['environment', 'key', 'shortkey', 'num_teks', 'seen']
+                    _filter = ['environment', 'key', 'shortkey', 'num_teks', 'seen', 'start_timestamp', 'end_timestamp']
                     if i not in _filter:
                         dks_sum_data[i] += dks_sum_data[i] + v
 

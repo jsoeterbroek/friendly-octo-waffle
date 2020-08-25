@@ -6,3 +6,7 @@ psycopg2
 pandas
 django-freeze
 django_extensions
+django-octicons
+django-pandas
+pandas
+numpy

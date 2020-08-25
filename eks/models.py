@@ -14,11 +14,9 @@ class Eks(models.Model):
     shortkey = models.CharField("short key", max_length=8)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     environment = models.CharField("omgeving", max_length=125)
-    seen = models.CharField("gezien", max_length=48)
-    #timewindow_start_timestamp = models.DateTimeField()
-    #timewindow_end_timestamp = models.DateTimeField()
-    #timewindow_start_timestamp = models.CharField("timewindow start", max_length=125)
-    #timewindow_end_timestamp = models.CharField("timewindow end", max_length=125)
+    seen = models.CharField("opgehaald", max_length=48)
+    start_timestamp = models.CharField("timestamp start", max_length=48)
+    end_timestamp = models.CharField("timestamp end", max_length=48)
     #region = models.CharField("region", max_length=24)
     #batch_num = models.CharField("batch_num", max_length=24)
     #batch_size = models.IntegerField("batch_size")
@@ -28,13 +26,12 @@ class Eks(models.Model):
     #signature_algorithm = models.CharField("signature_algorithm", max_length=24)
     num_teks = models.IntegerField('number of keys')
     #no_users = models.IntegerField('number of users')
-    #padding_multiplier = models.IntegerField('padding mulitplier')
+    #padding_multiplier = models.IntegerField('padding multiplier')
 
     def __str__(self):
         return self.key
 
     class Meta:
-        # abstract = True
         verbose_name = 'Exposure Keyset'
         verbose_name_plural = 'Exposure Keysets'
 
@@ -55,6 +52,15 @@ class Eks(models.Model):
 #        return self.key
 #
 #    class Meta:
-#        # abstract = True
 #        verbose_name = 'Tek'
 #        verbose_name_plural = 'Teks'
+
+#class Stats(models.Model):
+#    """ Stats model """
+#
+#    def __str__(self):
+#        return self.key
+#
+#    class Meta:
+#        verbose_name = 'Statistieken'
+#        verbose_name_plural = 'Statistieken'

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</body>
+</head>
+<body class='d-flex flex-column'>
+
+{% include "navbar.html" %}
+
+  <section class="container">
+    {% block content %}
+    {% endblock %}
+
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+
+  </section>
+
+
+<!-- Footer -->
+  <footer id="sticky-footer" class="d-flex bg-dark text-white-50">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12 col-sm-12 col-md-12 mt-2 mt-sm-2 text-center text-white">
+                    <p class="text-white small">joost.soeterboek@gmail.com</p>
+					<p class="text-white small"><a class="text-white" href="https://github.com/jsoeterbroek/friendly-octo-waffle">Github: github.com/jsoeterbroek/friendly-octo-waffle</a></p>
+				</div>
+			</div><!-- ./row -->	
+		</div> <!-- ./container -->
+  </footer> <!-- ./Footer -->
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+</body>
+</html>

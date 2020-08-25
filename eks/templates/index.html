@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load octicons %}
+{% block content %}
+{% load static %}
+<p>&nbsp;</p>
+
+<h2> Keysets </h2>
+<h4> gesorteerd op datum, laatste bovenaan </h4>
+
+  {% if plist %}
+  <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+                    <td><b>Shortkey</b></td>
+                    <td><b>Aantal TEKs</b></td>
+                    <td><b>Timewindow</b></td>
+                    <td><b>Opgehaald</b></td>
+            </tr>
+          </thead>
+          <tbody>
+    {% for p in plist %}
+      <tr>
+          <td>{{p.shortkey}}</td><td>{{p.num_teks}}</td><td>{{p.start_timestamp}} - {{p.end_timestamp}}</td><td>{{p.seen}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+  </table>
+ {% if plist.has_other_pages %}
+  <nav aria-label="pagination">
+  <ul class="pagination">
+    {% if plist.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page={{ plist.previous_page_number }}">Vorige</a></li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">Vorige</span></li>
+    {% endif %}
+    {% for i in plist.paginator.page_range %}
+      {% if plist.number == i %}
+        <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if plist.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ plist.next_page_number }}">Volgende</a></li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">Volgende</span></li>
+    {% endif %}
+  </ul>
+  </nav>
+  {% endif %}
+
+  {% else %}
+   <p>There are no keysets in the database.</p>
+  {% endif %}
+
+
+{% endblock %}
