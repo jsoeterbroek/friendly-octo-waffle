@@ -49,14 +49,16 @@ def process_data_from_dat(filename):
         f.close()
 
     # patterns
-    pattern_timewindow = re.compile(r"- Time window: ([0-9]*-[0-9]*-[0-9]* [0-9]*:[0-9]*:[0-9]* [A-Z]*) - ([0-9]*-[0-9]*-[0-9]* [0-9]*:[0-9]*:[0-9]* [A-Z]*)")
     pattern_num_keys = re.compile(r"Length: ([0-9]{1,}) keys")
+    pattern_padding_multiplier = re.compile(r"Padding Multiplier detected: ([0-9]{1,})")
+    pattern_timewindow = re.compile(r"- Time window: ([0-9]*-[0-9]*-[0-9]* [0-9]*:[0-9]*:[0-9]* [A-Z]*) - ([0-9]*-[0-9]*-[0-9]* [0-9]*:[0-9]*:[0-9]* [A-Z]*)")
     pattern_num_users = re.compile(r"([0-9]{1,}) user\(s\) found\.")
     pattern_num_subm = re.compile(r"([0-9]{1,}) user\(s\): ([0-9]{1,}) Diagnosis Key\(s\)")
     pattern_invalid_users = re.compile(r"([0-9]{1,}) user\(s\): Invalid Transmission Risk Profile")
     pattern_keys_not_parsed = re.compile(r"([0-9]{1,}) keys not parsed \(([0-9]{1,}) without padding\).")
 
     num_keys = 0
+    padding_multiplier = 0
     num_users = 0
     num_invalid_users = 0
     num_keys_not_parsed = 0
@@ -73,6 +75,10 @@ def process_data_from_dat(filename):
         pk = pattern_num_keys.findall(raw_data)
         if (len(pk) == 1):
             num_keys += int(pk[0])
+        # padding multiplier
+        pm = pattern_padding_multiplier.findall(raw_data)
+        if (len(pm) == 1):
+            padding_multiplier += int(pm[0])
         # number of users who submitted keys
         pu = pattern_num_users.findall(raw_data)
         if (len(pu) == 1):
@@ -120,6 +126,7 @@ def process_data_from_dat(filename):
     _data_list.append(num_submitted_keys)
     _data_list.append(start_timewindow)
     _data_list.append(end_timewindow)
+    _data_list.append(padding_multiplier)
 
     return _data_list
 
@@ -217,8 +224,8 @@ def run():
         datastore = os.path.join(basedir, '..', 'datastore')
         datastore_today = os.path.join(datastore, timestamp_date)
 
-        dks_json_file = os.path.join(datastore_today, "diagnosis_keys_statistics.json")
-        trl_json_file = os.path.join(datastore_today, "transmission_risk_level_statistics.json")
+        #sum_dks_json_file = os.path.join(datastore_today, "diagnosis_keys_statistics.json")
+        sum_trl_json_file = os.path.join(datastore_today, "transmission_risk_level_statistics.json")
 
         headers = {
             'Content-Type': 'application/json',
@@ -275,9 +282,15 @@ def run():
         seen = 0
         counter = 0
         trl_sum_data = {'timestamp_date': timestamp_date, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0}
-        dks_sum_data = {'timestamp_date': timestamp_date, 'num_keys': 0, 'num_users': 0, 'num_invalid_users': 0, 'num_keys_not_parsed': 0, 'num_keys_not_parsed_without_padding': 0, 'num_submitted_keys': 0}
+        #dks_sum_data = {'timestamp_date': timestamp_date, 'num_keys': 0, 'num_users': 0, 'num_invalid_users': 0, 'num_keys_not_parsed': 0, 'num_keys_not_parsed_without_padding': 0, 'num_submitted_keys': 0}
         for exposurekeyset in exposurekeysets:
             eks = shorten_exposurekeyset(exposurekeyset)
+            #num_dks_json_filename = "%s.diagnosis_keys_statistics.json" % (eks)
+            num_trl_json_filename = "%s.transmission_risk_level_statistics.json" % (eks)
+            #num_dks_json_file = os.path.join(datastore_today, num_dks_json_filename)
+            num_trl_json_file = os.path.join(datastore_today, num_trl_json_filename)
+            trl_num_data = {'keyset': exposurekeyset, 'timestamp_date': timestamp_date, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0}
+            #dks_num_data = {'keyset': exposurekeyset, 'timestamp_date': timestamp_date, 'num_keys': 0, 'num_users': 0, 'num_invalid_users': 0, 'num_keys_not_parsed': 0, 'num_keys_not_parsed_without_padding': 0, 'num_submitted_keys': 0}
 
             counter += 1
             if check_key_exists(exposurekeyset, datastore):
@@ -312,10 +325,10 @@ def run():
                 trl_data_dict = process_trl_from_dat(exposurekeyset, fn_eksdat)
 
                 num_keys = dks_data_list[0]
-                num_users = dks_data_list[1]
-                num_invalid_users = dks_data_list[2]
-                num_keys_not_parsed = dks_data_list[3]
-                num_keys_not_parsed_without_padding = dks_data_list[4]
+                #num_users = dks_data_list[1]
+                #num_invalid_users = dks_data_list[2]
+                #num_keys_not_parsed = dks_data_list[3]
+                #num_keys_not_parsed_without_padding = dks_data_list[4]
                 num_submitted_keys = dks_data_list[5]
                 dks_data_dict['environment'] = manifest_environment
 
@@ -326,6 +339,7 @@ def run():
                 dks_data_dict['seen'] = timestamp_date
                 dks_data_dict['start_timestamp'] = dks_data_list[6]
                 dks_data_dict['end_timestamp'] = dks_data_list[7]
+                dks_data_dict['padding_multiplier'] = dks_data_list[8]
 
                 print("INFO: {}/{} saving exposure keyset {} to db'.. ".format(counter, no_keysets, eks), end='')
                 if create_obj(Eks, dks_data_dict):
@@ -334,19 +348,45 @@ def run():
                     print("ERR")
 
                 dks_data_dict['num_keys'] = num_keys
-                dks_data_dict['num_users'] = num_users
-                dks_data_dict['num_invalid_users'] = num_invalid_users
-                dks_data_dict['num_keys_not_parsed'] = num_keys_not_parsed
-                dks_data_dict['num_keys_not_parsed_without_padding'] = num_keys_not_parsed_without_padding
+                #dks_data_dict['num_users'] = num_users
+                #dks_data_dict['num_invalid_users'] = num_invalid_users
+                #dks_data_dict['num_keys_not_parsed'] = num_keys_not_parsed
+                #dks_data_dict['num_keys_not_parsed_without_padding'] = num_keys_not_parsed_without_padding
                 dks_data_dict['num_submitted_keys'] = num_submitted_keys
 
-                # increment DKS (diagnosis_keys)
-                for i, v in dks_data_dict.items():
-                    _filter = ['environment', 'key', 'shortkey', 'num_teks', 'seen', 'start_timestamp', 'end_timestamp']
-                    if i not in _filter:
-                        dks_sum_data[i] += dks_sum_data[i] + v
+                #####################
+                # stats
+                #####################
+                # DKS (diagnosis_keys) for num
+                #for i, v in dks_data_dict.items():
+                #    _filter = ['environment', 'key', 'shortkey', 'num_teks', 'seen', 'start_timestamp', 'end_timestamp', 'padding_multiplier']
+                #    if i not in _filter:
+                #        dks_num_data[i] = dks_num_data[i] + v
 
-                # increment TRL
+                # TRL for num
+                for i, v in trl_data_dict.items():
+                    _filter = ['key']
+                    if i not in _filter:
+                        trl_num_data[i] = trl_num_data[i] + v
+
+                #print("INFO: saving stats DKS to datastore'.. ", end='')
+                #with open(num_dks_json_file, 'w') as f:
+                #    f.write(json.dumps(dks_num_data, sort_keys=True, indent=4))
+                #    f.close()
+                #print("OK")
+                print("INFO: saving stats TRL to datastore'.. ", end='')
+                with open(num_trl_json_file, 'w') as f:
+                    f.write(json.dumps(trl_num_data, sort_keys=True, indent=4))
+                    f.close()
+                print("OK")
+
+                # increment DKS (diagnosis_keys) for sum
+                #for i, v in dks_data_dict.items():
+                #    _filter = ['environment', 'key', 'shortkey', 'num_teks', 'seen', 'start_timestamp', 'end_timestamp', 'padding_multiplier']
+                #    if i not in _filter:
+                #        dks_sum_data[i] += dks_sum_data[i] + v
+
+                # increment TRL for sum
                 for i, v in trl_data_dict.items():
                     _filter = ['key']
                     if i not in _filter:
@@ -373,15 +413,13 @@ def run():
 
         # write to datastore
         if seen != counter:
-            print("INFO: saving stats DKS to datastore'.. ", end='')
-            # write json to disk
-            with open(dks_json_file, 'w') as f:
-                f.write(json.dumps(dks_sum_data, sort_keys=True, indent=4))
-                f.close()
-            print("OK")
-            print("INFO: saving stats TRL to datastore'.. ", end='')
-            # write json to disk
-            with open(trl_json_file, 'w') as f:
+            #print("INFO: saving stats sum DKS to datastore'.. ", end='')
+            #with open(sum_dks_json_file, 'w') as f:
+            #    f.write(json.dumps(dks_sum_data, sort_keys=True, indent=4))
+            #    f.close()
+            #print("OK")
+            print("INFO: saving stats sum TRL to datastore'.. ", end='')
+            with open(sum_trl_json_file, 'w') as f:
                 f.write(json.dumps(trl_sum_data, sort_keys=True, indent=4))
                 f.close()
             print("OK")
