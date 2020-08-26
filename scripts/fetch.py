@@ -225,7 +225,7 @@ def run():
         datastore_today = os.path.join(datastore, timestamp_date)
 
         #sum_dks_json_file = os.path.join(datastore_today, "diagnosis_keys_statistics.json")
-        sum_trl_json_file = os.path.join(datastore_today, "transmission_risk_level_statistics.json")
+        sum_trl_json_file = os.path.join(datastore_today, "trl_stats.json")
 
         headers = {
             'Content-Type': 'application/json',
@@ -286,7 +286,7 @@ def run():
         for exposurekeyset in exposurekeysets:
             eks = shorten_exposurekeyset(exposurekeyset)
             #num_dks_json_filename = "%s.diagnosis_keys_statistics.json" % (eks)
-            num_trl_json_filename = "%s.transmission_risk_level_statistics.json" % (eks)
+            num_trl_json_filename = "%s.trl_stats.json" % (eks)
             #num_dks_json_file = os.path.join(datastore_today, num_dks_json_filename)
             num_trl_json_file = os.path.join(datastore_today, num_trl_json_filename)
             trl_num_data = {'keyset': exposurekeyset, 'timestamp_date': timestamp_date, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0}
@@ -388,9 +388,10 @@ def run():
 
                 # increment TRL for sum
                 for i, v in trl_data_dict.items():
-                    _filter = ['key']
+                    _filter = ['key', 'timestamp_date']
                     if i not in _filter:
-                        trl_sum_data[i] += trl_sum_data[i] + v
+                        trl_sum_data[i] = trl_sum_data[i] + v
+                        print(trl_sum_data)
 
                 # clean up
                 ekszip = os.path.join(datastore_today, ekszip)
