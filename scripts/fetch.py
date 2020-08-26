@@ -130,7 +130,7 @@ def add_key_seen(_key, datastore):
 
     if os.path.isfile(keyseen):
         with open(keyseen, 'a+') as f:
-            f.write(_key)
+            f.write(_key + '\n')
         f.close()
 
 def check_key_exists(_key, datastore):
@@ -304,7 +304,7 @@ def run():
                 eksdat = eks + ".dat"
                 fn_eksdat = os.path.join(datastore_today, eksdat)
                 if not os.path.isfile(fn_eksdat):
-                    os.system("scripts/diagnosis-keys/parse_keys.py --auto-multiplier -m 5 -n -u -l -d {} > {}".format(zname, fn_eksdat))
+                    os.system("scripts/diagnosis-keys/parse_keys.py --auto-multiplier -m 5 -u -l -s -d {} > {}".format(zname, fn_eksdat))
                 anonymize_TEKs(fn_eksdat)
 
                 dks_data_list = process_data_from_dat(fn_eksdat)

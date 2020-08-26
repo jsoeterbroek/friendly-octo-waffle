@@ -1,7 +1,7 @@
 Exposure Notification Diagnosis Key Parser
 This script parses published Diagnosis Keys.
 
-File '/home/joost/Development/friendly-octo-waffle/scripts/datastore/2020-08-24/142759fb.zip' read.
+File '/home/joost/Development/friendly-octo-waffle/scripts/../datastore/2020-08-26/142759fb.zip' read.
 - Time window: 2020-08-20 18:00:02 CEST - 2020-08-21 18:00:02 CEST
 - Region: NL
 - Batch: 1 of 1
@@ -166,9 +166,12 @@ Revised Diagnosis Keys:
 (none)
 Parsing the Diagnosis Key list, counting unique users...
 Length: 150 keys
-Padding Multiplier detected: 5
-30 user(s) found.
+Padding Multiplier detected: 1
+20 user(s) found.
 They submitted these numbers of keys:
-30 user(s): Invalid Transmission Risk Profile
-150 keys not parsed (30 without padding).
-30 / 
+11 user(s): Invalid Transmission Risk Profile
+4 user(s): 1 Diagnosis Key(s)
+5 user(s): 2 Diagnosis Key(s)
+Old Android app used by 9 user(s).
+136 keys not parsed (136 without padding).
+20 / 4*1, 5*2 (9 old Android app(s))
