@@ -10,7 +10,7 @@ from zipfile import ZipFile
 import requests
 
 from django.db import IntegrityError
-from eks.models import Eks
+from eks.models import Eks, Stats
 
 manifest_environment = 'productie'
 #manifest_environment = 'test'
@@ -96,7 +96,7 @@ def process_data_from_dat(filename):
                     num_keys_not_parsed_without_padding += int(line[1])
         # timewindow
         pt = pattern_timewindow.findall(raw_data)
-        print(pt)
+        #print(pt)
         if (len(pt) > 0):
             for line in pt:
                 if (len(line) == 2):
@@ -168,7 +168,7 @@ def create_obj(klass, dictionary):
     _key = dictionary['key']
     if Eks.objects.filter(key=_key).exists():
         print(' key exists, skipping.. ', end="")
-        return True
+        return False
     else:
         # set regular fields
         for field, value in dictionary.items():
@@ -180,6 +180,22 @@ def create_obj(klass, dictionary):
             print("Error saving obj {}".format(e.message))
             return False
         return True
+
+def save_stat(_key, dictionary):
+    if Eks.objects.filter(key=_key).exists():
+        eks = Eks.objects.get(key=_key)
+    obj = Stats(key=eks)
+    # set regular fields
+    for field, value in dictionary.items():
+        if not isinstance(value, list):
+            setattr(obj, field, value)
+    try:
+        obj.save()
+    except IntegrityError as e:
+        print("Error saving obj {}".format(e.message))
+        return False
+    return True
+
 
 def process_trl_from_dat(_key, filename):
     """ returns: dict """
@@ -391,7 +407,17 @@ def run():
                     _filter = ['key', 'timestamp_date']
                     if i not in _filter:
                         trl_sum_data[i] = trl_sum_data[i] + v
-                        print(trl_sum_data)
+
+                # stats to db
+                print("INFO: saving stats sum TRL for keyset {} to db'.. ".format(eks), end='')
+                trl_stats_data = {}
+                trl_stats_data['sum_trl_1'] = trl_num_data['1']
+                trl_stats_data['sum_trl_2'] = trl_num_data['2']
+                trl_stats_data['sum_trl_3'] = trl_num_data['3']
+                if save_stat(exposurekeyset, trl_stats_data):
+                    print("OK")
+                else:
+                    print("ERR")
 
                 # clean up
                 ekszip = os.path.join(datastore_today, ekszip)
@@ -419,12 +445,8 @@ def run():
             #    f.write(json.dumps(dks_sum_data, sort_keys=True, indent=4))
             #    f.close()
             #print("OK")
-            print("INFO: saving stats sum TRL to datastore'.. ", end='')
+            print("INFO: saving stats sum TRL for keyset {} to datastore'.. ".format(eks), end='')
             with open(sum_trl_json_file, 'w') as f:
                 f.write(json.dumps(trl_sum_data, sort_keys=True, indent=4))
                 f.close()
             print("OK")
-
-            # stats to db
-            #print("sum TRLs: {}".format(trl_sum_data))
-            #print("sum SKDs: {}".format(dks_sum_data))
