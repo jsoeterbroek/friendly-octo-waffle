@@ -29,12 +29,11 @@ class Eks(models.Model):
     #padding_multiplier = models.IntegerField('padding multiplier')
 
     def __str__(self):
-        return self.key
+        return self.pk
 
     class Meta:
         verbose_name = 'Exposure Keyset'
         verbose_name_plural = 'Exposure Keysets'
-
 
 #class Tek(models.Model):
 #    """ Tek model """
@@ -55,12 +54,17 @@ class Eks(models.Model):
 #        verbose_name = 'Tek'
 #        verbose_name_plural = 'Teks'
 
-#class Stats(models.Model):
-#    """ Stats model """
-#
-#    def __str__(self):
-#        return self.key
-#
-#    class Meta:
-#        verbose_name = 'Statistieken'
-#        verbose_name_plural = 'Statistieken'
+class Stats(models.Model):
+    """ Stats model """
+
+    key = models.ForeignKey(Eks, on_delete=models.CASCADE)
+    sum_trl_1 = models.IntegerField("sum trl 1")
+    sum_trl_2 = models.IntegerField("sum trl 2")
+    sum_trl_3 = models.IntegerField("sum trl 3")
+
+    def __str__(self):
+        return '{}'.format(self.key)
+
+    class Meta:
+        verbose_name = 'Statistieken'
+        verbose_name_plural = 'Statistieken'

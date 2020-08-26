@@ -20,7 +20,7 @@
           <tbody>
     {% for p in plist %}
       <tr>
-          <td>{{p.shortkey}}</td><td>{{p.num_teks}}</td><td>{{p.start_timestamp}} - {{p.end_timestamp}}</td><td>{{p.seen}}</td>
+          <td><a href="{{p.shortkey}}/">{{p.shortkey}}<a/></td><td>{{p.num_teks}}</td><td>{{p.start_timestamp}} - {{p.end_timestamp}}</td><td>{{p.seen}}</td>
       </tr>
     {% endfor %}
   </tbody>

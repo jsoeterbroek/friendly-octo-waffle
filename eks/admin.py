@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Eks
+from .models import Eks, Stats
 
 admin.site.register(Eks)
-#admin.site.register(Tek)
+admin.site.register(Stats)

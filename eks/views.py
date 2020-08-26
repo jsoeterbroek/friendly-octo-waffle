@@ -1,7 +1,7 @@
 # views.py
 """ Put views here """
 
-#from django.http import Http404
+from django.http import Http404
 #from django.views.generic.edit import CreateView, UpdateView, DeleteView
 #from django.urls import reverse_lazy
 #from django.http import HttpResponse
@@ -26,7 +26,16 @@ def index(request):
     context = {'plist': plist}
     return render(request, 'index.html', context)
 
-#def IndexView(request):
-#    """ view """
-#    context = {}
-#    return render(request, 'index.html', context)
+def key_view(request, shortkey):
+    """ key view """
+
+    try:
+        keyset = Eks.objects.get(shortkey=shortkey)
+    except Eks.DoesNotExist:
+        raise Http404("key does not exist")
+
+    context = {
+        'keyset': keyset,
+    }
+
+    return render(request, 'key_view.html', context)
