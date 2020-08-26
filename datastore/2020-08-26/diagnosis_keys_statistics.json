@@ -1,0 +1,9 @@
+{
+    "num_invalid_users": 90,
+    "num_keys": 450,
+    "num_keys_not_parsed": 450,
+    "num_keys_not_parsed_without_padding": 90,
+    "num_submitted_keys": 0,
+    "num_users": 90,
+    "timestamp_date": "2020-08-26"
+}
