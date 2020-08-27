@@ -10,7 +10,7 @@ from zipfile import ZipFile
 import requests
 
 from django.db import IntegrityError
-from eks.models import Eks, Stats
+from keys.models import Keys, Stats
 
 manifest_environment = 'productie'
 #manifest_environment = 'test'
@@ -157,16 +157,11 @@ def check_key_exists(_key, datastore):
 
     return ret
 
-    #if Eks.objects.filter(key=_key).exists():
-    #    return True
-    #else:
-    #    return False
-
 def create_obj(klass, dictionary):
     obj = klass()
     # check if object exists
     _key = dictionary['key']
-    if Eks.objects.filter(key=_key).exists():
+    if Keys.objects.filter(key=_key).exists():
         print(' key exists, skipping.. ', end="")
         return False
     else:
@@ -182,8 +177,8 @@ def create_obj(klass, dictionary):
         return True
 
 def save_stat(_key, dictionary):
-    if Eks.objects.filter(key=_key).exists():
-        eks = Eks.objects.get(key=_key)
+    if Keys.objects.filter(key=_key).exists():
+        eks = Keys.objects.get(key=_key)
     obj = Stats(key=eks)
     # set regular fields
     for field, value in dictionary.items():
@@ -358,7 +353,7 @@ def run():
                 dks_data_dict['padding_multiplier'] = dks_data_list[8]
 
                 print("INFO: {}/{} saving exposure keyset {} to db'.. ".format(counter, no_keysets, eks), end='')
-                if create_obj(Eks, dks_data_dict):
+                if create_obj(Keys, dks_data_dict):
                     print("OK")
                 else:
                     print("ERR")
