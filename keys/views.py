@@ -8,12 +8,12 @@ from django.http import Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render
 #from django.utils import timezone
-from .models import Eks
+from .models import Keys, Stats
 
 def index(request):
     """ keysets view with pagination """
 
-    keysets_list_latest = Eks.objects.order_by('-seen')
+    keysets_list_latest = Keys.objects.order_by('-seen')
     paginator = Paginator(keysets_list_latest, 20)
     page = request.GET.get('page')
     try:
@@ -30,12 +30,14 @@ def key_view(request, shortkey):
     """ key view """
 
     try:
-        keyset = Eks.objects.get(shortkey=shortkey)
-    except Eks.DoesNotExist:
+        keyset = Keys.objects.get(shortkey=shortkey)
+        stats = Stats.objects.get(key=keyset)
+    except Keys.DoesNotExist:
         raise Http404("key does not exist")
 
     context = {
         'keyset': keyset,
+        'stats': stats,
     }
 
     return render(request, 'key_view.html', context)

@@ -21,7 +21,7 @@ SECRET_SECRET_KEY = 'changeme'
 SECRET_DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'eks.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'keys.sqlite3'),
     }
 }
 SECRET_USE_TZ = False

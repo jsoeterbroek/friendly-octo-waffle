@@ -18,7 +18,8 @@ ALLOWED_HOSTS = ['localhost']
 
 # Application definition
 INSTALLED_APPS = [
-    'eks.apps.EksConfig',
+    'keys.apps.KeysConfig',
+    'stats.apps.StatsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

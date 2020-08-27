@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load octicons %}
+{% block content %}
+{% load static %}
+<p>&nbsp;</p>
+
+<h2> Keyset {{keyset.shortkey}} </h2>
+<h4> </h4>
+
+  {% if keyset %}
+    {% if stats %}
+  <table class="table table-striped table-sm">
+      <tr>
+          <td><b>key</b></td><td>{{keyset.key}}</td>
+      </tr><tr>
+          <td><b>aantal TEKs</b></td><td>{{keyset.num_teks}}</td>
+      </tr><tr>
+          <td><b>timewindow start</b></td><td>{{keyset.start_timestamp}}</td>
+      </tr><tr>
+          <td><b>timewindow einde</b></td><td>{{keyset.end_timestamp}}</td>
+      </tr><tr>
+          <td><b>opgehaald</b></td><td>{{keyset.seen}}</td>
+      </tr><tr>
+          <td colspan="2"><h4>Stats</h4></td>
+      </tr><tr>
+          <td><b>Transmission Risk Level 1 aantal</b></td><td>{{stats.sum_trl_1}}</td>
+      </tr><tr>
+          <td><b>Transmission Risk Level 2 aantal</b></td><td>{{stats.sum_trl_2}}</td>
+      </tr><tr>
+          <td><b>Transmission Risk Level 3 aantal</b></td><td>{{stats.sum_trl_3}}</td>
+      </tr>
+  </table>
+
+  {% else %}
+   <p>There are no stats in the database.</p>
+  {% endif %}
+  {% else %}
+   <p>There are no keysets in the database.</p>
+  {% endif %}
+
+
+{% endblock %}

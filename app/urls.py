@@ -22,5 +22,6 @@ from . import views
 urlpatterns = [
     path('', views.IndexView, name='index'),
     path('admin/', admin.site.urls),
-    path('eks/', include('eks.urls'), name='eks-index'),
+    path('keys/', include('keys.urls'), name='keys'),
+    path('stats/', include('stats.urls'), name='stats'),
 ]
