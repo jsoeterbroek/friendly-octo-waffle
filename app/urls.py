@@ -15,13 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from django.conf.urls import url
+#from django.conf.urls import url
 #from organizations.backends import invitation_backend
 from . import views
 
 urlpatterns = [
-    path('', views.IndexView, name='index'),
+    path('', views.index, name='index'),
     path('admin/', admin.site.urls),
-    path('keys/', include('keys.urls'), name='keys'),
-    path('stats/', include('stats.urls'), name='stats'),
+    path('keys/', include('keys.urls'), name='key_index'),
+    path('stats/', include('stats.urls'), name='stat_index'),
 ]

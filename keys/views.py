@@ -10,7 +10,7 @@ from django.shortcuts import render
 #from django.utils import timezone
 from .models import Keys, Stats
 
-def index(request):
+def key_index(request):
     """ keysets view with pagination """
 
     keysets_list_latest = Keys.objects.order_by('-seen')
@@ -24,7 +24,7 @@ def index(request):
         plist = paginator.get_page(paginator.num_pages)
 
     context = {'plist': plist}
-    return render(request, 'index.html', context)
+    return render(request, 'key_index.html', context)
 
 def key_view(request, shortkey):
     """ key view """
