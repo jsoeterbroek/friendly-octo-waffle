@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Keys, Stats
+from .models import Keys, Trl
 
 admin.site.register(Keys)
-admin.site.register(Stats)
+admin.site.register(Trl)

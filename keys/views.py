@@ -7,8 +7,9 @@ from django.http import Http404
 #from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render
+from django.contrib.sitemaps import Sitemap
 #from django.utils import timezone
-from .models import Keys, Stats
+from .models import Keys, Trl
 
 def key_index(request):
     """ keysets view with pagination """
@@ -31,13 +32,23 @@ def key_view(request, shortkey):
 
     try:
         keyset = Keys.objects.get(shortkey=shortkey)
-        stats = Stats.objects.get(key=keyset)
+        trl = Trl.objects.get(key=keyset)
     except Keys.DoesNotExist:
         raise Http404("key does not exist")
 
     context = {
         'keyset': keyset,
-        'stats': stats,
+        'trl': trl,
     }
 
     return render(request, 'key_view.html', context)
+
+class KeySitemap(Sitemap):
+    changefreq = "never"
+    priority = 0.5
+
+    def items(self):
+        return Keys.objects.all()
+
+    def seen(self, obj):
+        return obj.seen

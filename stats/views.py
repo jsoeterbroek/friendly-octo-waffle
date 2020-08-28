@@ -8,9 +8,17 @@ from django.http import Http404
 #from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render
 #from django.utils import timezone
-#from .models import Keys, Stats
+from .models import Stats
 
 def stat_index(request):
     """ stat index """
+    try:
+        stats = Stats.objects.all().last()
+    except Stats.DoesNotExist:
+        raise Http404("stats does not exist")
 
-    return render(request, 'stat_index.html')
+    context = {
+        'stats': stats,
+    }
+
+    return render(request, 'stat_index.html', context)

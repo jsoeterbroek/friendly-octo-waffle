@@ -4,7 +4,7 @@ __pycache__
 venv
 *.swp
 #scripts/datastore/
-eks/migrations/
+*/migrations/
 test*.py
 app/secret_settings.py
 .vagrant

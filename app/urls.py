@@ -15,13 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.contrib.sitemaps.views import sitemap
 #from django.conf.urls import url
 #from organizations.backends import invitation_backend
 from . import views
+from keys.views import KeySitemap
+
+sitemaps = {'KeySitemap': KeySitemap}
 
 urlpatterns = [
     path('', views.index, name='index'),
     path('admin/', admin.site.urls),
     path('keys/', include('keys.urls'), name='key_index'),
     path('stats/', include('stats.urls'), name='stat_index'),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap')
 ]

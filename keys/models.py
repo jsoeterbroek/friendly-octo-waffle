@@ -31,11 +31,14 @@ class Keys(models.Model):
     def __str__(self):
         return self.pk
 
+    def get_absolute_url(self):
+        return "/keys/%s/" % self.shortkey
+
     class Meta:
         verbose_name = 'Exposure Keyset'
         verbose_name_plural = 'Exposure Keysets'
 
-class Stats(models.Model):
+class Trl(models.Model):
     """ Stats model """
 
     key = models.ForeignKey(Keys, on_delete=models.CASCADE)
@@ -47,5 +50,5 @@ class Stats(models.Model):
         return '{}'.format(self.key)
 
     class Meta:
-        verbose_name = 'Statistieken'
-        verbose_name_plural = 'Statistieken'
+        verbose_name = 'Transmission Risk Level'
+        verbose_name_plural = 'Transmission Risk Levels'

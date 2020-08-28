@@ -5,6 +5,7 @@ python-dateutil
 psycopg2
 pandas
 django-freeze
+html5lib
 django_extensions
 django-octicons
 django-pandas

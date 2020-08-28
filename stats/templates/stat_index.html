@@ -4,9 +4,63 @@
 {% load static %}
 <p>&nbsp;</p>
 
-<h2> Stats </h2>
+<h2> Statistieken </h2>
 <h4>  </h4>
+{% if stats %}
 
 
+<div class="row">
+    <div class="col-sm-4">
+        <div class="card border-dark mb-3" style="width: 22rem;">
+        <div class="card-header"> Keysets </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Totaal aantal keysets: {{ stats.keysets_total }}</li>
+                <li class="list-group-item">begin - eind</li>
+                <li class="list-group-item">Vestibulum at eros</li>
+            </ul>
+            <p class="card-text"> </p>
+        </div> <!-- card-body -->
+        <div class="card-footer">
+            <small class="text-muted">Last updated {{ stats.created}} </small>
+        </div> <!-- footer -->
+      </div> <!-- card -->
+    </div> <!-- col -->
+  <div class="col-sm-4">
+        <div class="card border-dark mb-3" style="width: 22rem;">
+        <div class="card-header"> Transmission Risk Level (TRL) </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"> FOOF FOFOF kkk</li>
+                <li class="list-group-item">Dapibus ac facilisis in</li>
+                <li class="list-group-item">Vestibulum at eros</li>
+            </ul>
+            <p class="card-text"> </p>
+        </div> <!-- card-body -->
+        <div class="card-footer">
+            <small class="text-muted">Last updated {{ stats.created}} </small>
+        </div> <!-- footer -->
+        </div> <!-- card -->
+    </div> <!-- col -->
+  <div class="col-sm-4">
+        <div class="card border-dark mb-3" style="width: 22rem;">
+        <div class="card-header"> Temporary Exposure Key (TEK) </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Gemiddeld aantal TEK's/keyset: {{ stats.teks_keyset_mean }}</li>
+                <li class="list-group-item">Vestibulum at eros</li>
+                <li class="list-group-item">Dapibus ac facilisis in</li>
+            </ul>
+            <p class="card-text"> </p>
+        </div> <!-- card-body -->
+        <div class="card-footer">
+            <small class="text-muted">Last updated {{ stats.created}} </small>
+        </div> <!-- footer -->
+        </div> <!-- card -->
+    </div> <!-- col -->
 
+</div> <!-- row -->
+
+
+{% endif %}
 {% endblock %}

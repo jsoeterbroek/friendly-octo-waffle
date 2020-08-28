@@ -10,7 +10,8 @@ from zipfile import ZipFile
 import requests
 
 from django.db import IntegrityError
-from keys.models import Keys, Stats
+from keys.models import Keys, Trl
+#from stats.models import Stats
 
 manifest_environment = 'productie'
 #manifest_environment = 'test'
@@ -176,10 +177,10 @@ def create_obj(klass, dictionary):
             return False
         return True
 
-def save_stat(_key, dictionary):
+def save_trl(_key, dictionary):
     if Keys.objects.filter(key=_key).exists():
         eks = Keys.objects.get(key=_key)
-    obj = Stats(key=eks)
+    obj = Trl(key=eks)
     # set regular fields
     for field, value in dictionary.items():
         if not isinstance(value, list):
@@ -190,7 +191,6 @@ def save_stat(_key, dictionary):
         print("Error saving obj {}".format(e.message))
         return False
     return True
-
 
 def process_trl_from_dat(_key, filename):
     """ returns: dict """
@@ -404,12 +404,12 @@ def run():
                         trl_sum_data[i] = trl_sum_data[i] + v
 
                 # stats to db
-                print("INFO: saving stats sum TRL for keyset {} to db'.. ".format(eks), end='')
-                trl_stats_data = {}
-                trl_stats_data['sum_trl_1'] = trl_num_data['1']
-                trl_stats_data['sum_trl_2'] = trl_num_data['2']
-                trl_stats_data['sum_trl_3'] = trl_num_data['3']
-                if save_stat(exposurekeyset, trl_stats_data):
+                print("INFO: saving TRL data for keyset {} to db'.. ".format(eks), end='')
+                trl_data = {}
+                trl_data['sum_trl_1'] = trl_num_data['1']
+                trl_data['sum_trl_2'] = trl_num_data['2']
+                trl_data['sum_trl_3'] = trl_num_data['3']
+                if save_trl(exposurekeyset, trl_data):
                     print("OK")
                 else:
                     print("ERR")
