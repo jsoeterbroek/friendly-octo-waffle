@@ -17,6 +17,9 @@ class Stats(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return "/stats/index.html"
+
     class Meta:
         #managed = False
         #db_table = "pandakeys"

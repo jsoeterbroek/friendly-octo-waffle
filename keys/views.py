@@ -7,7 +7,7 @@ from django.http import Http404
 #from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render
-from django.contrib.sitemaps import Sitemap
+#from django.contrib.sitemaps import Sitemap
 #from django.utils import timezone
 from .models import Keys, Trl
 
@@ -43,12 +43,12 @@ def key_view(request, shortkey):
 
     return render(request, 'key_view.html', context)
 
-class KeySitemap(Sitemap):
-    changefreq = "never"
-    priority = 0.5
-
-    def items(self):
-        return Keys.objects.all()
-
-    def seen(self, obj):
-        return obj.seen
+#class KeySitemap(Sitemap):
+#    changefreq = "never"
+#    priority = 0.5
+#
+#    def items(self):
+#        return Keys.objects.all()
+#
+#    def seen(self, obj):
+#        return obj.seen

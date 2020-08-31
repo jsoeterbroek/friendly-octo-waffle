@@ -9,5 +9,6 @@ html5lib
 django_extensions
 django-octicons
 django-pandas
+django-directory
 pandas
 numpy

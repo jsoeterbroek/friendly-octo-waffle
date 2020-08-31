@@ -19,14 +19,15 @@ from django.contrib.sitemaps.views import sitemap
 #from django.conf.urls import url
 #from organizations.backends import invitation_backend
 from . import views
-from keys.views import KeySitemap
+from .views import KeySitemap, Sitemap, DatastoreSitemap
 
-sitemaps = {'KeySitemap': KeySitemap}
+sitemaps = {'Sitemap': Sitemap, 'KeySitemap': KeySitemap, 'DatastoreSitemap': DatastoreSitemap}
 
 urlpatterns = [
     path('', views.index, name='index'),
     path('admin/', admin.site.urls),
     path('keys/', include('keys.urls'), name='key_index'),
     path('stats/', include('stats.urls'), name='stat_index'),
+    path('datastore/', include('directory.urls'), name='datastore'),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap')
 ]

@@ -121,12 +121,13 @@ FREEZE_BASE_URL = None
 
 #if True 'freeze' will convert all absolute urls to relative urls
 #useful if the generated static site will run locally (file://) or in an unknown folder which is not the document-root (only if FREEZE_BASE_URL is not defined)
+#FREEZE_RELATIVE_URLS = False
 FREEZE_RELATIVE_URLS = False
-#FREEZE_RELATIVE_URLS = True
 
 #if True 'freeze' will inject a script at the end of each page
 #which will force hrefs like 'path/' to 'path/index.html' (only if the site is running under file://)
 #useful if the generated static site will run locally (requires FREEZE_RELATIVE_URLS set to True) to prevent local directory index
+#FREEZE_LOCAL_URLS = False
 FREEZE_LOCAL_URLS = False
 
 #if True 'freeze' will fetch each url founded in sitemap.xml
@@ -160,3 +161,8 @@ FREEZE_ZIP_NAME = 'freeze'
 #The request headers to use during the get requests that scrape the site
 #can be used to set Authentication headers, by default sets the user-agent
 FREEZE_REQUEST_HEADERS = {'user-agent': 'django-freeze'}
+
+# django-directory
+INSTALLED_APPS += ['directory']
+DIRECTORY_DIRECTORY = 'datastore'
+DIRECTORY_TEMPLATE = 'directory/list.html'
