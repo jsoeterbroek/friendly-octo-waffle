@@ -8,7 +8,7 @@ from django.http import Http404
 #from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render
 #from django.utils import timezone
-from .models import Stats
+from .models import Stats, KeysetFreq
 
 def stat_index(request):
     """ stat index """
@@ -17,8 +17,14 @@ def stat_index(request):
     except Stats.DoesNotExist:
         raise Http404("stats does not exist")
 
+    try:
+        keysetfreqs = KeysetFreq.objects.all()
+    except KeysetFreq.DoesNotExist:
+        raise Http404("stats does not exist")
+
     context = {
         'stats': stats,
+        'keysetfreqs': keysetfreqs,
     }
 
     return render(request, 'stat_index.html', context)

@@ -25,3 +25,17 @@ class Stats(models.Model):
         #db_table = "pandakeys"
         verbose_name = 'Stat'
         verbose_name_plural = 'Stats'
+
+class KeysetFreq(models.Model):
+
+    datestring = models.CharField("Datum", unique=True, max_length=10)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    freq = models.IntegerField("Frequentie")
+
+    def __str__(self):
+        return self.datestring
+
+    class Meta:
+        #managed = False
+        verbose_name = 'keyset frequentie datum'
+        verbose_name_plural = 'keyset frequenties datum'
