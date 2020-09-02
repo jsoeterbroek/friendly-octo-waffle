@@ -1,7 +1,9 @@
-{# simplest template for listing the directory #}
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-<body>
+{% extends "base.html" %}
+{% load octicons %}
+{% block content %}
+{% load static %}
+<p>&nbsp;</p>
+
 <h2>{{ directory_name }}</h2>
 <ul>
 {% for basename, link_target in directory_directories %}
@@ -19,6 +21,4 @@
   {% endif %}
 {% endfor %}
 </ul>
-
-</body>
-</html>
+{% endblock %}
