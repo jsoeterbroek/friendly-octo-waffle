@@ -30,9 +30,16 @@ EOF
 pip3 install -r requirements-diagnosis-keys.txt
 pip3 install -r requirements.txt
 
+# patch django-freeze
+parserfile="/home/vagrant/.local/lib/python3.8/site-packages/freeze/parser.py"
+sed -i '/from django.core.urlresolvers import reverse, NoReverseMatch/c from django.urls import reverse, NoReverseMatch' $parserfile
+
+
 python3 manage.py makemigrations
 python3 manage.py migrate
 python3 manage.py runscript fetch
-python3 manage.py generate_static_site
+python3 manage.py runscript stats
+#python3 manage.py generate_static_site
+
 
 exit 0
