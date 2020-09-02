@@ -221,7 +221,16 @@ def run():
     keysets_total = len(keysets_list)
 
     # TRL
-    trl_daily_dist = 1
+    trl_daily_dist = 150
+
+    #trl_sum_data = {'timestamp_date': timestamp_date, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0}
+    # write to datastore
+    #print("INFO: saving stats sum TRL for keyset {} to datastore'.. ".format(eks), end='')
+    #with open(sum_trl_json_file, 'w') as f:
+    #    f.write(json.dumps(trl_sum_data, sort_keys=True, indent=4))
+    #    f.close()
+    #print("OK")
+
 
     # teks
 

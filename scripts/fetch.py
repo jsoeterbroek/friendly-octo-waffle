@@ -236,7 +236,7 @@ def run():
         datastore_today = os.path.join(datastore, timestamp_date)
 
         #sum_dks_json_file = os.path.join(datastore_today, "diagnosis_keys_statistics.json")
-        sum_trl_json_file = os.path.join(datastore_today, "trl_stats.json")
+        #sum_trl_json_file = os.path.join(datastore_today, "trl_stats.json")
 
         headers = {
             'Content-Type': 'application/json',
@@ -292,7 +292,7 @@ def run():
 
         seen = 0
         counter = 0
-        trl_sum_data = {'timestamp_date': timestamp_date, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0}
+        #trl_sum_data = {'timestamp_date': timestamp_date, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0}
         #dks_sum_data = {'timestamp_date': timestamp_date, 'num_keys': 0, 'num_users': 0, 'num_invalid_users': 0, 'num_keys_not_parsed': 0, 'num_keys_not_parsed_without_padding': 0, 'num_submitted_keys': 0}
         for exposurekeyset in exposurekeysets:
             eks = shorten_exposurekeyset(exposurekeyset)
@@ -398,10 +398,10 @@ def run():
                 #        dks_sum_data[i] += dks_sum_data[i] + v
 
                 # increment TRL for sum
-                for i, v in trl_data_dict.items():
-                    _filter = ['key', 'timestamp_date']
-                    if i not in _filter:
-                        trl_sum_data[i] = trl_sum_data[i] + v
+                #for i, v in trl_data_dict.items():
+                #    _filter = ['key', 'timestamp_date']
+                #    if i not in _filter:
+                #        trl_sum_data[i] = trl_sum_data[i] + v
 
                 # stats to db
                 print("INFO: saving TRL data for keyset {} to db'.. ".format(eks), end='')
@@ -426,6 +426,9 @@ def run():
         manifestzip = os.path.join(datastore_today, 'manifest.zip')
         if os.path.isfile(manifestzip):
             os.remove(manifestzip)
+        manifestjson = os.path.join(datastore_today, 'manifest.json')
+        if os.path.isfile(manifestjson):
+            os.remove(manifestjson)
         contentbin = os.path.join(datastore_today, 'content.bin')
         if os.path.isfile(contentbin):
             os.remove(contentbin)
@@ -434,14 +437,8 @@ def run():
             os.remove(contentsig)
 
         # write to datastore
-        if seen != counter:
-            #print("INFO: saving stats sum DKS to datastore'.. ", end='')
-            #with open(sum_dks_json_file, 'w') as f:
-            #    f.write(json.dumps(dks_sum_data, sort_keys=True, indent=4))
-            #    f.close()
-            #print("OK")
-            print("INFO: saving stats sum TRL for keyset {} to datastore'.. ".format(eks), end='')
-            with open(sum_trl_json_file, 'w') as f:
-                f.write(json.dumps(trl_sum_data, sort_keys=True, indent=4))
-                f.close()
-            print("OK")
+        #print("INFO: saving stats sum TRL for keyset {} to datastore'.. ".format(eks), end='')
+        #with open(sum_trl_json_file, 'w') as f:
+        #    f.write(json.dumps(trl_sum_data, sort_keys=True, indent=4))
+        #    f.close()
+        #print("OK")
