@@ -19,7 +19,7 @@ def index(request):
     return render(request, 'index.html')
 
 class KeySitemap(Sitemap):
-    changefreq = "never"
+    changefreq = "weekly"
     priority = 0.5
 
     def items(self):
@@ -29,7 +29,7 @@ class KeySitemap(Sitemap):
         return obj.seen
 
 class Sitemap(Sitemap):
-    changefreq = "never"
+    changefreq = "hourly"
     priority = 0.5
 
     def items(self):
@@ -39,7 +39,7 @@ class Sitemap(Sitemap):
         return reverse(item)
 
 class DatastoreSitemap(Sitemap):
-    changefreq = "never"
+    changefreq = "hourly"
     priority = 0.5
 
     def items(self):
@@ -50,6 +50,7 @@ class DatastoreSitemap(Sitemap):
             if "demo" not in _subfolder:
                 _s = "/" + _subfolder + "/"
                 subfolders.append(_s)
+        subfolders.append('/datastore/')
         return subfolders
 
     def location(self, item):
