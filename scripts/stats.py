@@ -12,9 +12,8 @@ from datetime import datetime
 import pandas as pd
 #import numpy as np
 #import matplotlib.pyplot as plt
-#import seaborn
 import plotly.graph_objects as go
-#seaborn.set()
+#import plotly.io as pio
 
 from django.db import IntegrityError
 #from django.conf import settings
@@ -23,14 +22,6 @@ from django.forms.models import model_to_dict
 from keys.models import Keys
 from stats.models import Stats, KeysetFreq
 
-#manifest_environment = 'productie'
-#manifest_environment = 'test'
-
-#user = settings.DATABASES['default']['USER']
-#password = settings.DATABASES['default']['PASSWORD']
-#database_name = settings.DATABASES['default']['NAME']
-#database_url = "sqlite:///%s" % (database_name)
-
 def write_json(path, json_data):
     with open(path, 'w') as file_out:
         json.dump(json_data, file_out)
@@ -38,11 +29,6 @@ def write_json(path, json_data):
 def read_json(path):
     with open(path) as file_in:
         return json.load(file_in)
-
-#def shorten_exposurekeyset(exposurekeyset):
-#
-#    _eks = exposurekeyset[0:8]
-#    return _eks
 
 def get_all_keysets():
 
@@ -55,12 +41,6 @@ def queryset_to_list(qs, fields=None, exclude=None):
         my_array.append(model_to_dict(x, fields=fields, exclude=exclude))
 
     return my_array
-
-#class MyEncoder(json.JSONEncoder):
-#    def default(self, obj):  # pylint: disable=arguments-differ, method-hidden
-#        if isinstance(obj, ndarray):
-#            return obj.tolist()
-#        return json.JSONEncoder.default(self, obj)
 
 def save_stats(dictionary):
     obj = Stats()
@@ -78,10 +58,18 @@ def save_stats(dictionary):
 def save_keysetfreq(dictionary):
     obj = KeysetFreq()
     # set regular fields
-    for field, value in dictionary.items():
-        if not isinstance(value, list):
-            setattr(obj, field, value)
+    datestring = dictionary['datestring']
+    #freq = dictionary['freq']
     try:
+        obj = KeysetFreq.objects.get(datestring=datestring)
+        for field, value in dictionary.items():
+            if not isinstance(value, list):
+                setattr(obj, field, value)
+        obj.save()
+    except KeysetFreq.DoesNotExist:
+        for field, value in dictionary.items():
+            if not isinstance(value, list):
+                setattr(obj, field, value)
         obj.save()
     except IntegrityError as e:
         print("Error saving obj {}".format(e))
@@ -90,6 +78,7 @@ def save_keysetfreq(dictionary):
 
 def exists_keysetfreq(keyset_freq_dict):
 
+    ret = False
     datestring = keyset_freq_dict['datestring']
     freq = keyset_freq_dict['freq']
     try:
@@ -100,6 +89,58 @@ def exists_keysetfreq(keyset_freq_dict):
         ret = False
 
     return ret
+
+def create_fig_keyset_freq_date(_seen_freq_dict, _datastore):
+    #png_renderer = pio.renderers["png"]
+    width = 450
+    height = 250
+
+    #pio.renderers.default = "png"
+
+    # keyset freq by date to plotly
+    x_dates = []
+    y_freqs = []
+    for k, v in _seen_freq_dict.items():
+        x_dates.append(k)
+        y_freqs.append(v)
+
+    fig = go.Figure([go.Bar(x=x_dates, y=y_freqs)])
+    #fig = go.Figure([go.Bar(x=x_dates, y=y_freqs, text='y_freqs')])
+    #fig.update_traces(texttemplate='%{text:.2s}', textposition='outside')
+    #fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
+    fig.update_layout(barmode='group', xaxis_tickangle=-45)
+    annotations = []
+    # Title
+    annotations.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
+                            xanchor='left', yanchor='bottom',
+                            text='Aantal keysets/datum',
+                            font=dict(family='Arial', size=24, color='rgb(37,37,37)'),
+                            showarrow=False))
+    # Source
+    annotations.append(dict(xref='paper', yref='paper', x=0.5, y=-0.3,
+                            xanchor='center', yanchor='top',
+                            text='Bron: CoronaMelder backend API (datum hier)',
+                            font=dict(family='Arial', size=10, color='rgb(150,150,150)'),
+                            showarrow=False))
+
+    # margins
+    fig.update_layout(
+        margin=dict(l=20, r=20, t=40, b=22),
+    )
+    fig.update_layout(annotations=annotations)
+
+    fig.to_image(format="png", engine="kaleido")
+    keyset_freq_date_fig_filename = "keyset_freq_date.png"
+    datastore_filename = os.path.join(_datastore, keyset_freq_date_fig_filename)
+    print("INFO: writing keyset frequency by date fig to datastore .. ", end='')
+    fig.write_image(datastore_filename, width=width, height=height)
+    print("OK")
+    datastore_filename = os.path.join('stats/static', keyset_freq_date_fig_filename)
+    print("INFO: writing keyset frequency by date fig to static dir .. ", end='')
+    fig.write_image(datastore_filename, width=width, height=height)
+    print("OK")
+
+    #fig.show()
 
 def run():
 
@@ -171,81 +212,8 @@ def run():
                 print("ERR")
     print(RES)
 
-    # keyset freq by date to plotly
-    x_dates = []
-    y_freqs = []
-    #title = 'Main Source for News'
-    colors = 'rgb(67,67,67)'
-    #mode_size = 10
-    line_size = 3
-    for k, v in seen_freq_dict.items():
-        x_dates.append(k)
-        y_freqs.append(v)
+    create_fig_keyset_freq_date(seen_freq_dict, datastore)
 
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=x_dates, y=y_freqs,
-                             mode='lines',
-                             line=dict(color=colors, width=line_size),
-                             name='Keyset Frequentie/datum'))
-    fig.update_layout(
-        xaxis=dict(
-            showline=True,
-            showgrid=True,
-            showticklabels=True,
-            linecolor='rgb(67,67,67)',
-            linewidth=2,
-            ticks='outside',
-            tickfont=dict(
-                family='Arial',
-                size=12,
-                color='rgb(82, 82, 82)',
-            ),
-        ),
-        yaxis=dict(
-            showgrid=True,
-            zeroline=True,
-            showline=True,
-            showticklabels=True,
-        ),
-        autosize=False,
-        margin=dict(
-            autoexpand=False,
-            l=100,
-            r=20,
-            t=110,
-        ),
-        showlegend=False,
-        plot_bgcolor='white'
-    )
-    annotations = []
-    # Title
-    annotations.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
-                            xanchor='left', yanchor='bottom',
-                            text='Aantal keysets/datum',
-                            font=dict(family='Arial', size=30, color='rgb(37,37,37)'),
-                            showarrow=False))
-    # Source
-    annotations.append(dict(xref='paper', yref='paper', x=0.5, y=-0.1,
-                            xanchor='center', yanchor='top',
-                            text='Bron: CoronaMelder backend API (datum hier)',
-                            font=dict(family='Arial', size=12, color='rgb(150,150,150)'),
-                            showarrow=False))
-
-    fig.update_traces(mode='lines+markers')
-    fig.update_layout(annotations=annotations)
-    fig.update_layout(legend=dict(y=0.5, traceorder='reversed', font_size=16))
-
-    fig.to_image(format="svg", engine="kaleido")
-    keyset_freq_date_svg_filename = "keyset_freq_date.svg"
-    datastore_filename = os.path.join(datastore, keyset_freq_date_svg_filename)
-    print("INFO: writing keyset frequency by date svg to datastore .. ", end='')
-    fig.write_image(datastore_filename)
-    print("OK")
-    datastore_filename = os.path.join('stats/static', keyset_freq_date_svg_filename)
-    print("INFO: writing keyset frequency by date svg to static dir .. ", end='')
-    fig.write_image(datastore_filename)
-    print("OK")
-    #fig.show()
 
     # keysets
     keysets_total = len(keysets_list)
