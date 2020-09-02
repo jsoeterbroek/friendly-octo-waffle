@@ -150,7 +150,7 @@ FREEZE_INCLUDE_MEDIA = ('cache', 'images', 'videos', )
 #if True the generated site will contain also the STATIC folder and ALL its content
 FREEZE_INCLUDE_STATIC = True
 #elif the value is a list or tuple only the specified directories will be included
-FREEZE_INCLUDE_STATIC = ('myapp1', 'myapp2', 'myapp3', )
+FREEZE_INCLUDE_STATIC = ('keys', 'stats')
 
 #if True the generated site will be zipped, the *.zip file will be created in FREEZE_ROOT
 FREEZE_ZIP_ALL = False
