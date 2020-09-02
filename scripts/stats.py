@@ -91,6 +91,7 @@ def exists_keysetfreq(keyset_freq_dict):
     return ret
 
 def create_fig_keyset_freq_date(_seen_freq_dict, _datastore):
+    _timestamp_date = '{:%d-%m-%Y %H:%M}'.format(datetime.now())
     #png_renderer = pio.renderers["png"]
     width = 450
     height = 250
@@ -111,6 +112,7 @@ def create_fig_keyset_freq_date(_seen_freq_dict, _datastore):
     fig.update_layout(barmode='group', xaxis_tickangle=-45)
     annotations = []
     # Title
+    datumtext = "Bron: CoronaMelder backend API ({})".format(_timestamp_date)
     annotations.append(dict(xref='paper', yref='paper', x=0.0, y=1.05,
                             xanchor='left', yanchor='bottom',
                             text='Aantal keysets/datum',
@@ -119,7 +121,7 @@ def create_fig_keyset_freq_date(_seen_freq_dict, _datastore):
     # Source
     annotations.append(dict(xref='paper', yref='paper', x=0.5, y=-0.3,
                             xanchor='center', yanchor='top',
-                            text='Bron: CoronaMelder backend API (datum hier)',
+                            text=datumtext,
                             font=dict(family='Arial', size=10, color='rgb(150,150,150)'),
                             showarrow=False))
 
