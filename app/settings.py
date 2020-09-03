@@ -166,3 +166,5 @@ FREEZE_REQUEST_HEADERS = {'user-agent': 'django-freeze'}
 INSTALLED_APPS += ['directory']
 DIRECTORY_DIRECTORY = 'datastore'
 DIRECTORY_TEMPLATE = 'directory/list.html'
+
+KEYSETS_PAGINATE_BY = 50

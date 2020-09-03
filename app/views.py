@@ -9,7 +9,9 @@ from django.shortcuts import render
 #from django.contrib.auth.decorators import login_required
 #from django.shortcuts import get_object_or_404
 from django.contrib.sitemaps import Sitemap
+from django.core.paginator import Paginator
 from django.urls import reverse
+from django.conf import settings
 #from django.contrib.auth.models import User
 from keys.models import Keys
 #from stats.models import Stats
@@ -23,16 +25,25 @@ class KeySitemap(Sitemap):
     priority = 0.5
 
     def items(self):
-        return Keys.objects.all()
+        keys = Keys.objects.all()
+        #paginator = Paginator(keys, settings.KEYSETS_PAGINATE_BY)
+        #return keys, paginator.page_range
+        return keys
 
     def seen(self, obj):
         return obj.seen
+
+    #def location(self, page):
+    #    return reverse('key_index')
 
 class Sitemap(Sitemap):
     changefreq = "hourly"
     priority = 0.5
 
     def items(self):
+        #keys = Keys.objects.all()
+        #paginator = Paginator(keys, settings.KEYSETS_PAGINATE_BY)
+        #return ['index', 'stat_index', 'key_index'], paginator.page_range
         return ['index', 'stat_index', 'key_index']
 
     def location(self, item):
