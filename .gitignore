@@ -9,3 +9,4 @@ test*.py
 app/secret_settings.py
 .vagrant
 app/fixtures/
+keys.sqlite3.backup

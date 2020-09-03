@@ -3,16 +3,25 @@ Django settings for core project.
 """
 
 import os
-from .secret_settings import SECRET_SECRET_KEY, SECRET_DATABASES, SECRET_USE_TZ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = SECRET_SECRET_KEY
-DATABASES = SECRET_DATABASES
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'eurm6@ov0v%k*02@lz+$b!bhn79sy1lz_77%6)eg(-zt#xs2=^'
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'db',
+        'PORT': 5432,
+    }
+}
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost']
 
@@ -91,7 +100,7 @@ LANGUAGE_CODE = 'nl-NL'
 TIME_ZONE = 'Europe/Amsterdam'
 USE_I18N = False
 USE_L10N = True
-USE_TZ = SECRET_USE_TZ
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
