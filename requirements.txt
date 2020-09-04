@@ -5,6 +5,7 @@ django-extensions==3.0.5
 django-octicons==1.0.2
 django-pandas==0.6.2
 django-directory==0.0.3
+django-heroku
 pandas==1.1.0
 numpy==1.19.1
 kaleido==0.0.3.post1
@@ -14,4 +15,4 @@ requests==2.24.0
 pycryptodome
 protobuf
 plyvel
-psycopg2
+gunicorn
