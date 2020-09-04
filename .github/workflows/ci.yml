@@ -18,6 +18,8 @@ jobs:
           python-version: "3.8"
       - name: "Install requirements"
         run: pip install -r requirements.txt
+      - name: "run patch"
+        run: /bin/bash scripts/patch_freeze.sh
       - name: "run fetch"
         run: python3 manage.py runscript fetch
       - name: "run stats"
