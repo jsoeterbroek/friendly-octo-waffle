@@ -16,3 +16,4 @@ pycryptodome
 protobuf
 plyvel
 gunicorn
+html5lib==1.1
