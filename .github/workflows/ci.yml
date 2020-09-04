@@ -18,4 +18,4 @@ jobs:
         with:
           python-version: "3.8"
       - name: "Install requirements"
-        run: pip install -r requirements
+        run: pip install -r requirements.txt
