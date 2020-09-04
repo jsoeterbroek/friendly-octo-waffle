@@ -25,4 +25,4 @@ jobs:
       - name: "run stats"
         run: python3 manage.py runscript stats
       - name: "run freeze"
-        run: python3 manage.py generate_static_site
+        run: /bin/bash scripts/run_freeze.sh
