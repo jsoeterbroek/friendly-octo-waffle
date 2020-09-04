@@ -173,7 +173,7 @@ INSTALLED_APPS += ['directory']
 DIRECTORY_DIRECTORY = 'datastore'
 DIRECTORY_TEMPLATE = 'directory/list.html'
 
-KEYSETS_PAGINATE_BY = 50
+KEYSETS_PAGINATE_BY = 20
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
