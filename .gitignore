@@ -1,5 +1,4 @@
-*.sqlite
-*.sqlite3
+docker.sqlite3
 __pycache__
 venv
 *.swp
