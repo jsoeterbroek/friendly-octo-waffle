@@ -12,7 +12,6 @@
           <thead>
             <tr>
                     <td><b>Shortkey</b></td>
-                    <td><b>Aantal TEKs</b></td>
                     <td><b>Timewindow</b></td>
                     <td><b>Opgehaald</b></td>
             </tr>
@@ -20,7 +19,7 @@
           <tbody>
     {% for p in plist %}
       <tr>
-          <td><a href="{{p.shortkey}}/">{{p.shortkey}}<a/></td><td>{{p.num_teks}}</td><td>{{p.start_timestamp}} - {{p.end_timestamp}}</td><td>{{p.seen}}</td>
+          <td><a href="{{p.shortkey}}/">{{p.shortkey}}<a/></td><td>{{p.start_timestamp}} - {{p.end_timestamp}}</td><td>{{p.seen}}</td>
       </tr>
     {% endfor %}
   </tbody>

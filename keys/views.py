@@ -44,12 +44,16 @@ def key_view(request, shortkey):
 
     return render(request, 'key_view.html', context)
 
-#class KeySitemap(Sitemap):
-#    changefreq = "never"
-#    priority = 0.5
+#def key_dat_view(request, shortkey):
+#    """ key dat view """
 #
-#    def items(self):
-#        return Keys.objects.all()
+#    try:
+#        keyset = Keys.objects.get(shortkey=shortkey)
+#    except Keys.DoesNotExist:
+#        raise Http404("key does not exist")
 #
-#    def seen(self, obj):
-#        return obj.seen
+#    context = {
+#        'keyset': keyset,
+#    }
+#
+#    return render(request, 'key_dat_view.html', context)

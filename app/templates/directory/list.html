@@ -1,10 +1,13 @@
 {% extends "base.html" %}
-{% load octicons %}
 {% block content %}
 {% load static %}
 <p>&nbsp;</p>
 
-<h2>{{ directory_name }}</h2>
+{% if directory_name == '/' %}
+<h3>datastore/</h3>
+  {% else %}
+<h3>datastore/{{ directory_name }}</h3>
+  {% endif %}
 <ul>
 {% for basename, link_target in directory_directories %}
   {% if link_target %}
