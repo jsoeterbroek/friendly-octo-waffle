@@ -19,7 +19,7 @@ DATABASES = {
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost', 'eks-dashboard.herokuapp.com']
 
 # Application definition
 INSTALLED_APPS = [
